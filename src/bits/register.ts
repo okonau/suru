@@ -1,4 +1,4 @@
-import { Suru } from "core";
+import { Suru } from "..";
 
 import { DescBit } from ".";
 import { NameBit } from ".";

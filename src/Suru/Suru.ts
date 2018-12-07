@@ -1,7 +1,7 @@
-import { Task, SuruBit } from "core";
+import { Task, SuruBit } from "..";
 import { TaskBuilder } from "./TaskBuilder";
 
-import { __tasks, __current_task } from "core/private";
+import { __tasks, __current_task } from "../private";
 
 export class Suru {
   private [__tasks]: { [name: string]: Task } = {};

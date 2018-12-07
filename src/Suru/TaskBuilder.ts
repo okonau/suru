@@ -1,5 +1,5 @@
-import { __current_task, __tasks } from "core/private";
-import { Suru, Task, SuruBit } from "core";
+import { __current_task, __tasks } from "../private";
+import { Suru, Task, SuruBit } from "..";
 
 export function TaskBuilder(taskDefFn: Function) {
   const task = new Task();

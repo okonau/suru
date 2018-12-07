@@ -1,4 +1,4 @@
-import { Suru, SuruBit, Task } from "core";
+import { Suru, SuruBit, Task } from "../..";
 
 type TaskRunFn = (...args: any[]) => any;
 

@@ -1,4 +1,4 @@
-import { Task } from "core";
+import { Task } from "..";
 
 export const __current_task = Symbol("__current_task");
 export const __tasks = Symbol("__tasks");
