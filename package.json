@@ -1,18 +1,14 @@
 {
-  "name": "suru",
-  "version": "1.0.0",
+  "name": "@surucode/suru-core",
+  "version": "0.0.1",
   "description": "",
-  "main": "dist/suru.js",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "argparse": "^1.0.10"
-  },
   "devDependencies": {
-    "@types/argparse": "^1.0.35",
     "@types/node": "^10.12.10",
     "@types/webpack-env": "^1.13.6",
     "ts-loader": "^5.3.1",

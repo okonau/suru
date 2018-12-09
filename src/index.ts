@@ -5,5 +5,5 @@ import { Task } from "./Task";
 export {
     Suru,
     Task, 
-    SuruBit,
+    SuruBit
 };
