@@ -4,12 +4,13 @@ task(() => {
   name("build");
   desc("build suru with suru");
 
-  shell("npx", "tsc");
+  shell("npx", "tsc", "-d");
 
   run(() => {
     const package_json = fs.readFileSync(__dirname+"/package.json", { encoding: "utf-8", flag: "r"});
     const package = JSON.parse(package_json);
-    package.main = "index.js"
+    package.main = "index.js";
+    package.types = "index.d.ts";
     fs.writeFileSync(__dirname+"/dist/package.json", JSON.stringify(package, null, 3));
   })
 });

@@ -61,8 +61,7 @@ export class Suru {
   }
 
   public bit(bit: string): Suru {
-    const req = __non_webpack_require__ || require;
-    req(req.resolve(`${bit}/register`) ? `${bit}/register` : bit);
+    require(require.resolve(`${bit}/register`) ? `${bit}/register` : bit);
 
     return this;
   }
