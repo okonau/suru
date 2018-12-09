@@ -4,13 +4,10 @@ import { DescBit } from ".";
 import { NameBit } from ".";
 import { RunBit } from ".";
 
-export default () => {
-  console.log("hello");
-  void Suru.register()
-    .registerBit("desc", DescBit)
-    .registerBit("name", NameBit)
-    .registerBit("run", RunBit);
-};
+void Suru.register()
+.registerBit("desc", DescBit)
+.registerBit("name", NameBit)
+.registerBit("run", RunBit);
 
 declare global {
   namespace NodeJS {
