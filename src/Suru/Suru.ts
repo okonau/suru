@@ -1,11 +1,14 @@
+import { require_bit, require_pkg } from "../Utils"
 import { Task, SuruBit } from "..";
 import { TaskBuilder } from "./TaskBuilder";
 
-import { __tasks, __current_task } from "../private";
+import { __tasks, __current_task, __package } from "../private";
 
 export class Suru {
   private [__tasks]: { [name: string]: Task } = {};
   private [__current_task]: Task | null = null;
+  private [__package] = "::";
+
   public bits: {
     [name: string]: ((...args: any[]) => void);
   } = {};
@@ -23,10 +26,19 @@ export class Suru {
   }
 
   public invoke(taskName: string): Function {
-    const task = this.getTask(taskName);
+    const unscoped = taskName.match(/^::/);
+    const final_name = unscoped ? taskName : `${this[__package]}${taskName}`;
+    const task = this.getTask(final_name);
 
     if (!(task instanceof Task)) {
-      throw new Error(`Cannot invoke task ! ${JSON.stringify(task, null, 3)}`);
+      console.log(this[__package])
+      if (this[__package] !== "::") {
+        // try parent package before throwing        
+        const parent_pkg = this[__package].replace(/:[^:]*$/, '') + ':'
+        console.log("failed to invoke ", final_name, "trying", `${parent_pkg}${taskName}`)
+        return this.invoke(`${parent_pkg}${taskName}`);
+      }
+      throw new Error(`Cannot invoke task ! ${JSON.stringify(taskName, null, 3)}`);
     }
 
     return task.run.bind(task);
@@ -39,11 +51,12 @@ export class Suru {
       Object.defineProperties(global, {
         suru: { get: () => shimasu },
         task: { get: () => shimasu.task.bind(shimasu) },
+        package: { get: () => shimasu.package.bind(shimasu) },
         invoke: { get: () => shimasu.invoke.bind(shimasu) },
         bit: { get: () => shimasu.bit.bind(shimasu) }
       });
 
-      shimasu.bit("../bits");
+      require("../bits/register");
     }
 
     return global.suru;
@@ -66,26 +79,26 @@ export class Suru {
     return Suru.register().registerBit(name, bit);
   }
 
-  private _module_exist(name: string) {
-    try {
-      require(name);
-    } catch (err) {
-      if (err.code === "MODULE_NOT_FOUND") {
-        return false;
-      }
-    }
-
-    return true;
+  public bit(bit: string): Suru {
+    require_bit(bit);
+    return this;
   }
 
-  public bit(bit: string): Suru {
-    require(this._module_exist(`@surucode/suru-${bit}/register`)
-      ? `@surucode/suru-${bit}/register`
-      : this._module_exist(`${bit}/register`)
-      ? `${bit}/register`
-      : bit);
+  public package(pkg_name: string, pkg: (() => void) | string) {
+    this.run_in_package(`${this[__package]}${pkg_name.replace(/:$/, '')}:`, () => {
+      if (typeof pkg === "string") {
+        require_pkg(pkg);
+      } else {
+        pkg();
+      }
+    });
+  }
 
-    return this;
+  public run_in_package(pkg_name: string, run: () => void) {
+    const pkg_before = this[__package];
+    this[__package] = `${pkg_name.replace(/:$/, '')}:`;
+    run();
+    this[__package] = pkg_before;
   }
 }
 
@@ -96,6 +109,7 @@ declare global {
 
       bit(name: string): void;
       task(defTaskFn: Function): Function;
+      package(defTaskFn: Function): void;
       invoke(taskName: string): Function;
     }
   }

@@ -1,8 +1,9 @@
-import { __current_task, __tasks } from "../private";
+import { __current_task, __tasks, __package } from "../private";
 import { Suru, Task, SuruBit } from "..";
 
 export function TaskBuilder(taskDefFn: Function) {
   const task = new Task();
+  task.package = this[__package];
 
   const defToRemove: string[] = [];
   const previousDefs: { [name: string]: PropertyDescriptor } = {};
@@ -49,7 +50,7 @@ export function TaskBuilder(taskDefFn: Function) {
     throw new Error(`Task run should be a function`);
   }
 
-  this[__tasks][task.name] = task;
+  this[__tasks][`::${task.name}`] = task;
 
   return task.run.bind(task);
 }
