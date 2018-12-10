@@ -18,6 +18,10 @@ export class Suru {
     return this[__tasks][taskName];
   }
 
+  public getTasks(): Task[] {
+    return Object.values(this[__tasks]);
+  }
+
   public invoke(taskName: string): Function {
     const task = this.getTask(taskName);
 
@@ -38,6 +42,8 @@ export class Suru {
         invoke: { get: () => shimasu.invoke.bind(shimasu) },
         bit: { get: () => shimasu.bit.bind(shimasu) }
       });
+
+      shimasu.bit("core/bits");
     }
 
     return global.suru;
@@ -61,7 +67,7 @@ export class Suru {
   }
 
   public bit(bit: string): Suru {
-    require(require.resolve(`${bit}/register`) ? `${bit}/register` : bit);
+    require(require.resolve(`@surucode/suru-${bit}/register`) ? `@surucode/suru-${bit}/register` : require.resolve(`${bit}/register`) ? `${bit}/register` : bit);
 
     return this;
   }

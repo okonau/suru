@@ -6,6 +6,7 @@
       "module": "commonjs",
       "target": "es6",
       "sourceMap": true,
+      "lib": ["es2016", "es2017.object"],
     },
     "exclude": [
       "node_modules",
