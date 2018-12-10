@@ -43,7 +43,7 @@ export class Suru {
         bit: { get: () => shimasu.bit.bind(shimasu) }
       });
 
-      shimasu.bit("core/bits");
+      shimasu.bit("../bits");
     }
 
     return global.suru;
@@ -66,8 +66,24 @@ export class Suru {
     return Suru.register().registerBit(name, bit);
   }
 
+  private _module_exist(name: string) {
+    try {
+      require(name);
+    } catch (err) {
+      if (err.code === "MODULE_NOT_FOUND") {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   public bit(bit: string): Suru {
-    require(require.resolve(`@surucode/suru-${bit}/register`) ? `@surucode/suru-${bit}/register` : require.resolve(`${bit}/register`) ? `${bit}/register` : bit);
+    require(this._module_exist(`@surucode/suru-${bit}/register`)
+      ? `@surucode/suru-${bit}/register`
+      : this._module_exist(`${bit}/register`)
+      ? `${bit}/register`
+      : bit);
 
     return this;
   }
