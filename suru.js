@@ -1,4 +1,6 @@
 const fs = require("fs");
+const process = require("process");
+const path = require("path");
 
 task(() => {
   name("build");
@@ -7,19 +9,38 @@ task(() => {
   shell("npx", "tsc", "-d");
 
   run(() => {
-    const package_json = fs.readFileSync(__dirname+"/package.json", { encoding: "utf-8", flag: "r"});
+    const package_json = fs.readFileSync(__dirname + "/package.json", {
+      encoding: "utf-8",
+      flag: "r"
+    });
     const package = JSON.parse(package_json);
     package.main = "index.js";
     package.types = "index.d.ts";
-    fs.writeFileSync(__dirname+"/dist/package.json", JSON.stringify(package, null, 3));
-  })
+
+    delete package.devDependencies;
+    delete package.scripts;
+
+    fs.writeFileSync(
+      __dirname + "/dist/package.json",
+      JSON.stringify(package, null, 3)
+    );
+  });
 });
 
 task(() => {
   name("publish");
-  desc("echo");
+  desc("publish suru-core");
 
-  arg("toto", { optional: true });
+  invoke("build")();
 
-  shell("echo", "here", "from", "code", "now shell:", shell.args, "shell finished");
+  process.chdir(path.resolve("./dist", __dirname));
+
+  shell("npm", "publish", "@surucode/suru-core");
+});
+
+task(() => {
+  name("test");
+  desc("test with jest");
+
+  shell("npm", "t", "--", "--watch");
 });
