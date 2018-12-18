@@ -8,7 +8,7 @@ const require_from_dir = (name: string, path: string) => {
         require(require.resolve(name, { paths: [path] }));
     } catch (err) {
         if (err.code === "MODULE_NOT_FOUND") {
-            console.log("could not require ", name, "from", path);
+            console.debug("could not require ", name, "from", path);
             return false;
         }
     }

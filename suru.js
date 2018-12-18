@@ -24,6 +24,9 @@ task(() => {
       __dirname + "/dist/package.json",
       JSON.stringify(package, null, 3)
     );
+    fs.unlinkSync(
+      __dirname + "/dist/package-lock.json"
+    );
   });
 });
 
@@ -31,9 +34,13 @@ task(() => {
   name("publish");
   desc("publish suru-core");
 
+  shell("npm", "install");
+
   invoke("build")();
 
-  process.chdir(path.resolve("./dist", __dirname));
+  run(() => {
+    process.chdir(path.resolve("./dist", __dirname));
+  });
 
   shell("npm", "publish", "@surucode/suru-core");
 });
